@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة المستخدمين ومنح الصلاحيات</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: #f8f9fa;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+            background: #007bff;
+            margin: 0;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-primary {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+        .btn-danger {
+            background-color: #d9534f;
+            color: #ffffff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ced4da;
+            padding: 10px;
+            text-align: right;
+        }
+        th {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}">الرئيسية</a></li>
+            <li><a href="{{ url_for('expenses') }}">المصروفات</a></li>
+            <li><a href="{{ url_for('user_management') }}">إدارة المستخدمين</a></li>
+            <li><a href="{{ url_for('logout') }}">تسجيل الخروج</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h2>إدارة المستخدمين ومنح الصلاحيات</h2>
+        
+        <h3>إضافة مستخدم جديد</h3>
+        <form action="{{ url_for('add_user') }}" method="POST">
+            <div class="form-group">
+                <label for="username">اسم المستخدم:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="role">الصلاحيات:</label>
+                <select id="role" name="role">
+                    <option value="admin">مدير النظام</option>
+                    <option value="editor">محرر</option>
+                    <option value="viewer">مشاهد</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">إضافة المستخدم</button>
+        </form>
+        
+        <h3>قائمة المستخدمين</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>المعرف</th>
+                    <th>اسم المستخدم</th>
+                    <th>الصلاحيات</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" style="display:inline-block;">
+                            <button type="submit" class="btn btn-danger">حذف المستخدم</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

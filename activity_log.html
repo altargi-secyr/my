@@ -1,0 +1,18 @@
+<table border="1">
+    <!-- إضافة زر للرجوع إلى لوحة التحكم -->
+    <a href="{{ url_for('control_panel') }}" style="display: block; margin: 20px; text-align: center;">العودة إلى لوحة التحكم</a>
+    <tr>
+        <th>اسم المستخدم</th>
+        <th>النشاط</th>
+        <th>التوقيت</th>
+        <th>التفاصيل</th>
+    </tr>
+    {% for log in logs %}
+    <tr>
+        <td>{{ log.Username }}</td>
+        <td>{{ log.Action }}</td>
+        <td>{{ log.Timestamp }}</td>
+        <td>{{ log.Details }}</td>
+    </tr>
+    {% endfor %}
+</table>

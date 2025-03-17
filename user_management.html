@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة المستخدمين</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* ... (النمط الحالي يبقى كما هو) ... */
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}">الرئيسية</a></li>
+            <li><a href="{{ url_for('expenses') }}">المصروفات</a></li>
+            <li><a href="{{ url_for('control_panel') }}">لوحة التحكم</a></li>
+            <li><a href="{{ url_for('logout') }}">تسجيل الخروج</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <!-- تحقق من دور المستخدم -->
+        {% if session.role != 'admin' %}
+            <div class="alert alert-danger" style="text-align: center; padding: 20px;">
+                ليست لديك صلاحية الوصول إلى هذه الصفحة!
+            </div>
+        {% else %}
+            <h2>إدارة المستخدمين</h2>
+            
+            <h3>إضافة مستخدم جديد</h3>
+            <form action="{{ url_for('add_user') }}" method="POST">
+                <label for="username">اسم المستخدم:</label>
+                <input type="text" id="username" name="username" required>
+                
+                <label for="password">كلمة المرور:</label>
+                <input type="password" id="password" name="password" required>
+                
+                <label for="role">الصلاحيات:</label>
+                <select id="role" name="role">
+                    <option value="admin">مدير النظام</option>
+                    <option value="editor">محرر</option>
+                    <option value="viewer">مشاهد</option>
+                </select>
+                
+                <button type="submit" class="btn btn-primary">إضافة المستخدم</button>
+            </form>
+            
+            <h3>قائمة المستخدمين</h3>
+            {% if not users %}
+                <p style="color: #666; text-align: center;">لا يوجد مستخدمين مسجلين</p>
+            {% else %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المعرف</th>
+                            <th>اسم المستخدم</th>
+                            <th>الصلاحيات</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.role }}</td>
+                            <td>
+                                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-danger">حذف المستخدم</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

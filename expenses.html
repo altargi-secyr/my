@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>كشف المصروفات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- تضمين Bootstrap للتصميم -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      direction: rtl;
+    }
+    .table thead th, .table tbody td {
+      text-align: center;
+      vertical-align: middle;
+    }
+    .nav-btn {
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- شريط التنقل -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">كشف المصروفات</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+            aria-controls="navbarNav" aria-expanded="false" aria-label="تبديل التنقل">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link nav-btn" href="{{ url_for('dashboard') }}">اضافة مصروفات جديدة</a></li>
+        <li class="nav-item"><a class="nav-link nav-btn" href="{{ url_for('control_panel') }}">لوحة التحكم</a></li>
+        <li class="nav-item"><a class="nav-link nav-btn" href="{{ url_for('expenses') }}">كشف المصروفات</a></li>
+        <li class="nav-item"><a class="nav-link nav-btn" href="{{ url_for('logout') }}">تسجيل الخروج</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- محتوى الصفحة -->
+  <div class="container mt-4">
+    <!-- نموذج البحث -->
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <form class="form-inline">
+          <input class="form-control mr-sm-2" type="search" id="searchInput" placeholder="بحث بالاسم أو الرقم العسكري أو الرقم الوطني" aria-label="بحث">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="searchTable()">بحث</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- جدول عرض البيانات -->
+    <table class="table table-bordered table-striped" id="dataTable">
+      <thead class="thead-dark">
+        <tr>
+          <th>الرقم العسكري</th>
+          <th>الرتبة</th>
+          <th>الاسم الرباعي</th>
+          <th>الوحدة التابع لها</th>
+          <th>الوحدة الأم</th>
+          <th>الرقم الوطني</th>
+          <th>الدرجة</th>
+          <th>قيمة المرتب</th>
+          <th>قياس الحذاء</th>
+          <th>قياس البدلة</th>
+          <th>الطول</th>
+          <th>رقم الهاتف</th>
+          <th>اقرب الأقارب</th>
+          <th>رقم اقرب الأقارب</th>
+          <th>الأوسمة</th>
+          <th>الدورات المتحصل عليها</th>
+          <th>الصورة الشخصية</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for expense in expenses_data %}
+        <tr>
+          <!-- هنا قم بتعديل الحقول بناءً على الأعمدة وبياناتك -->
+          <td>{{ expense['ID'] }}</td>
+          <td>{{ expense.get('Rank', 'غير محدد') }}</td>
+          <td>{{ expense['FullName'] }}</td>
+          <td>{{ expense.get('SubUnit', 'غير محدد') }}</td>
+          <td>{{ expense.get('MainUnit', 'غير محدد') }}</td>
+          <td>{{ expense.get('NationalID', 'غير محدد') }}</td>
+          <td>{{ expense.get('Degree', 'غير محدد') }}</td>
+          <td>{{ expense['Amount'] }}</td>
+          <td>{{ expense.get('ShoeSize', 'غير محدد') }}</td>
+          <td>{{ expense.get('SuitSize', 'غير محدد') }}</td>
+          <td>{{ expense.get('Height', 'غير محدد') }}</td>
+          <td>{{ expense.get('PhoneNumber', 'غير محدد') }}</td>
+          <td>{{ expense.get('RelativeName', 'غير محدد') }}</td>
+          <td>{{ expense.get('RelativePhone', 'غير محدد') }}</td>
+          <td>{{ expense.get('Medals', 'غير محدد') }}</td>
+          <td>{{ expense.get('Courses', 'غير محدد') }}</td>
+          <td>
+            <!-- مثال لصورة شخصية، يجب تخزين رابط الصورة في بياناتك الفعلية -->
+            <img src="{{ expense.get('ProfileImage', url_for('static', filename='default_profile.png')) }}" alt="صورة شخصية" width="50">
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- تضمين مكتبات jQuery وBootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // دالة البحث في الجدول (البحث بالاسم أو الرقم العسكري أو الرقم الوطني)
+    function searchTable() {
+      var input = document.getElementById("searchInput");
+      var filter = input.value.toUpperCase();
+      var table = document.getElementById("dataTable");
+      var tr = table.getElementsByTagName("tr");
+      for (var i = 1; i < tr.length; i++) {
+        tr[i].style.display = "none";
+        var tds = tr[i].getElementsByTagName("td");
+        if (tds.length > 0) {
+          var militaryNum = tds[0].textContent || tds[0].innerText;
+          var fullName = tds[2].textContent || tds[2].innerText;
+          var nationalNum = tds[5].textContent || tds[5].innerText;
+          if (militaryNum.toUpperCase().indexOf(filter) > -1 ||
+              fullName.toUpperCase().indexOf(filter) > -1 ||
+              nationalNum.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .control-panel a { 
+            margin: 10px; 
+            padding: 15px 25px; 
+            background: #007bff; 
+            color: #fff; 
+            border-radius: 8px; 
+            text-decoration: none; 
+            transition: background 0.3s; 
+        }
+        .control-panel a:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}">الرئيسية</a></li>
+            <li><a href="{{ url_for('control_panel') }}">لوحة التحكم</a></li>
+            <li><a href="{{ url_for('logout') }}">تسجيل الخروج</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2>مرحباً، {{ username }}</h2>
+        <div class="control-panel">
+            <a href="{{ url_for('user_management') }}">إدارة المستخدمين</a>
+            <a href="{{ url_for('activity_log') }}">سجل الأنشطة</a>
+        </div>
+    </div>
+</body>
+</html>
